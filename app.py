@@ -8,10 +8,6 @@ st.title("Restaurant Dashboard")
 # Load data
 data = pd.read_csv("test_data.csv")
 
-# Convert date columns to datetime
-data['date'] = pd.to_datetime(data['date'])
-data['month'] = data['date'].dt.to_period('M').astype(str)
-data['day_of_week'] = data['date'].dt.day_name()
 
 # Chart 1: Line Chart with Area (Sum of Price by Month with Trend Line)
 st.subheader("Sum of Price by Month (with Trend Line)")
