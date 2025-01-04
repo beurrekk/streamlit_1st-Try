@@ -30,7 +30,7 @@ price_by_month = price_by_month[price_by_month['Price'] >= 8000]  # Filter to sh
 fig1 = px.area(price_by_month, x='Month', y='Price', 
                title="Sum of Price by Month", 
                markers=True, 
-               color_discrete_sequence=px.colors.sequential.Sunset)
+               color_discrete_sequence=px.colors.sequential.Purples)
 fig1.add_traces(go.Scatter(x=price_by_month['Month'], y=price_by_month['Price'], 
                            mode='lines', name='Trend Line', line=dict(color='blue', dash='dot')))
 st.plotly_chart(fig1, use_container_width=True)
@@ -41,7 +41,7 @@ menu_by_day = menu_by_day[menu_by_day['Menu Count'] >= 2500]  # Filter to show 2
 fig2 = px.area(menu_by_day, x='Day Of Week', y='Menu Count', 
                title="Average Count of Menu by Day of Week", 
                markers=True, 
-               color_discrete_sequence=px.colors.sequential.Teal)
+               color_discrete_sequence=px.colors.sequential.Purples)
 st.plotly_chart(fig2, use_container_width=True)
 
 # Popular Menu Section
@@ -57,7 +57,7 @@ with col1:
     fig3 = px.bar(top_food, x='Menu', y='Count', 
                   title="Top 4 Popular Food Categories", 
                   color='Menu', 
-                  color_discrete_sequence=px.colors.qualitative.Set1)
+                  color_discrete_sequence=px.colors.sequential.Pinkyl)
     st.plotly_chart(fig3, use_container_width=True)
 
 # Chart 4: Bar chart (Top 4 Popular Drink Categories)
@@ -67,7 +67,7 @@ with col2:
     fig4 = px.bar(top_drink, x='Menu', y='Count', 
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
-                  color_discrete_sequence=px.colors.qualitative.Set2)
+                  color_discrete_sequence=px.colors.sequential.Pinkyl)
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
@@ -83,7 +83,7 @@ with col3:
     fig5 = px.area(menu_quantity_by_month, x='Month', y='Menu Quantity', 
                    title="Quantity of All Menus by Month", 
                    markers=True, 
-                   color_discrete_sequence=px.colors.sequential.Magma)
+                   color_discrete_sequence=px.colors.sequential.Purples)
     st.plotly_chart(fig5, use_container_width=True)
 
 # Chart 6: Line chart with area (Average Waiting Time vs. Kitchen Staff)
@@ -93,7 +93,7 @@ with col4:
     fig6 = px.area(avg_wait_time_by_staff, x='Kitchen Staff', y='Avg Waiting Time', 
                    title="Average Waiting Time vs. Kitchen Staff", 
                    markers=True, 
-                   color_discrete_sequence=px.colors.sequential.Viridis)
+                   color_discrete_sequence=px.colors.sequential.Purples)
     st.plotly_chart(fig6, use_container_width=True)
 
 # Row 3: Chart 7 and Chart 8
@@ -105,7 +105,7 @@ with col5:
     fig7 = px.line(avg_wait_time_by_month, x='Month', y='Avg Waiting Time', 
                    title="Average Waiting Time by Month", 
                    markers=True, 
-                   color_discrete_sequence=px.colors.qualitative.Plotly)
+                   color_discrete_sequence=px.colors.sequential.Pinkyl)
     st.plotly_chart(fig7, use_container_width=True)
 
 # Chart 8: Line chart without area (Menu Count and Kitchen Staff by Day of Week)
@@ -113,9 +113,9 @@ with col6:
     menu_and_staff_by_day = df.groupby('Day Of Week').agg({'Menu': 'count', 'Kitchen Staff': 'mean'}).reset_index()
     fig8 = go.Figure()
     fig8.add_trace(go.Scatter(x=menu_and_staff_by_day['Day Of Week'], y=menu_and_staff_by_day['Menu'], 
-                              mode='lines+markers', name='Menu Count', line=dict(color='red')))
+                              mode='lines+markers', name='Menu Count', line=dict(color='purple')))
     fig8.add_trace(go.Scatter(x=menu_and_staff_by_day['Day Of Week'], y=menu_and_staff_by_day['Kitchen Staff'], 
-                              mode='lines+markers', name='Kitchen Staff', line=dict(color='green')))
+                              mode='lines+markers', name='Kitchen Staff', line=dict(color='pink')))
     fig8.update_layout(title="Menu Count and Kitchen Staff by Day of Week", xaxis_title="Day of Week")
     st.plotly_chart(fig8, use_container_width=True)
 
@@ -128,5 +128,5 @@ drink_quantity_by_month = drink_data.groupby(['Month', 'Menu']).size().reset_ind
 fig9 = px.line(drink_quantity_by_month, x='Month', y='Drink Quantity', color='Menu', 
                title="Quantity of Drink Menus by Month (per Drink Type)", 
                markers=True, 
-               color_discrete_sequence=px.colors.qualitative.Bold)
+               color_discrete_sequence=px.colors.sequential.Purples)
 st.plotly_chart(fig9, use_container_width=True)
