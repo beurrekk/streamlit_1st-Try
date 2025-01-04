@@ -6,7 +6,7 @@ import plotly.express as px
 st.title("Restaurant Dashboard")
 
 # Upload data file
-uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
+uploaded_file = st.file_uploader('test_data.csv')
 if uploaded_file:
     # Load data
     data = pd.read_csv(uploaded_file)
