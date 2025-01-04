@@ -1,34 +1,40 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
-# Load data
-data = pd.read_csv("test_data.csv")
+# Load the data
+file_path = r'test_data.csv'
+data = pd.read_csv(file_path)
 
-# Ensure 'date' column is in datetime format
-data['date'] = pd.to_datetime(data['date'], errors='coerce')
-data = data.dropna(subset=['date'])
-
-# Add necessary columns
-data['month'] = data['date'].dt.to_period('M').astype(str)
-data['day_of_week'] = data['date'].dt.day_name()
-
-# Sum of Price by Month with Trend Line
-st.header("Sum of Price by Month with Trend Line")
-monthly_price = data.groupby('month')['price'].sum().reset_index()
-fig1 = px.area(monthly_price, x='month', y='price', title="Sum of Price by Month", labels={'price': 'Sum of Price', 'month': 'Month'})
-fig1.add_traces(
-    go.Scatter(x=monthly_price['month'], y=monthly_price['price'], mode='lines', name='Trend Line', line=dict(color='black', dash='dash'))
+# Data Preparation
+chart_data = (
+    data.groupby(['Drinks Staff', 'Category'])
+    .size()
+    .reset_index(name='Total Orders')
 )
-fig1.update_traces(line_color="#fbc536", fillcolor="#fbc536")
-st.plotly_chart(fig1)
 
-# Average Count of Menu by Day of Week
-st.header("Average Count of Menu by Day of Week")
-day_of_week_data = data.groupby('day_of_week')['menu'].count().reset_index()
-day_of_week_data['menu'] /= len(data['date'].dt.date.unique())  # Average count per day
-fig2 = px.area(day_of_week_data, x='day_of_week', y='menu', title="Average Count of Menu by Day of Week",
-               labels={'menu': 'Count of Menu', 'day_of_week': 'Day Of Week'})
-fig2.update_traces(line_color="#fbc536", fillcolor="#fbc536")
-st.plotly_chart(fig2)
+# Streamlit App
+st.title("Total Orders by Drinks Staff and Category")
+
+# Create the Bar Chart using Plotly
+fig = px.bar(
+    chart_data,
+    x="Drinks Staff",
+    y="Total Orders",
+    color="Category",
+    barmode="group",
+    labels={"Drinks Staff": "Number of Drinks Staff", "Total Orders": "Total Orders", "Category": "Category"},
+    title="Total Orders by Drinks Staff and Category",
+    color_discrete_map={"drink": "#636efb", "food": "#ef553b"}  # Custom colors
+)
+
+# Update layout for y-axis range
+fig.update_layout(
+    yaxis=dict(
+        tickvals=[2000, 4000, 6000],  # Custom tick range
+        range=[0, 7000]  # Ensure the full range is visible
+    )
+)
+
+# Display the chart
+st.plotly_chart(fig, use_container_width=True)
