@@ -10,10 +10,9 @@ df = pd.read_csv(data_file)
 # Preprocessing
 df['Order Time'] = pd.to_datetime(df['Order Time'])
 df['Serve Time'] = pd.to_datetime(df['Serve Time'])
-df['Month'] = df['Order Time'].dt.strftime('%B')  # Month names (e.g., January, February)
+df['Month'] = df['Order Time'].dt.strftime('%B')  # Month names
 df['Month'] = pd.Categorical(df['Month'], categories=[
-    'January', 'February', 'March', 'April', 'May', 'June', 
-    'July', 'August', 'September', 'October', 'November', 'December'], ordered=True)
+    'June', 'July', 'August', 'September', 'October', 'November', 'December'], ordered=True)
 df['Day Of Week'] = pd.Categorical(df['Day Of Week'], 
                                    categories=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
                                    ordered=True)
