@@ -32,37 +32,53 @@ st.header("Overall")
 
 
 # Chart 0: Bar and Line in One Chart
-bar_data = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Average Sales')
+# Add category filter
+category_filter = st.radio("Select Category", ['food', 'drink'], index=0)  # Default to 'food'
+
+# Filter data based on selected category
+filtered_df = df[df['Category'] == category_filter]
+
+# Data for Bar Chart: Average Sales per Day of Week
+bar_data = filtered_df.groupby('Day Of Week')['Price'].mean().reset_index(name='Average Sales')
+
+# Data for Line Chart: Staff Counts (Kitchen Staff and Drinks Staff)
 line_data = df.groupby('Day Of Week').agg({'Kitchen Staff': 'mean', 'Drinks Staff': 'mean'}).reset_index()
 
+# Create Bar and Line Chart
 fig0 = go.Figure()
+
+# Add Bar Chart: Average Sales
 fig0.add_trace(go.Bar(
     x=bar_data['Day Of Week'],
     y=bar_data['Average Sales'],
     name='Average Sales',
     marker_color='#F2DD83',
-    yaxis='y1'
+    yaxis='y1'  # Left y-axis
 ))
+
+# Add Line Chart: Kitchen Staff
 fig0.add_trace(go.Scatter(
     x=line_data['Day Of Week'],
     y=line_data['Kitchen Staff'],
     mode='lines',
     name='Kitchen Staff',
-    line=dict(color='#f85c70'),
-    yaxis='y2'
+    line=dict(color='#CBD9EF'),
+    yaxis='y2'  # Right y-axis
 ))
+
+# Add Line Chart: Drinks Staff
 fig0.add_trace(go.Scatter(
     x=line_data['Day Of Week'],
     y=line_data['Drinks Staff'],
     mode='lines',
     name='Drinks Staff',
-    line=dict(color='#9A8CB5'),
-    yaxis='y2'
+    line=dict(color='#FCD5C6'),
+    yaxis='y2'  # Right y-axis
 ))
 
 # Set layout for dual y-axis
 fig0.update_layout(
-    title="Average Sales and Staff by Day of Week",
+    title=f"Average Sales and Staff by Day of Week ({category_filter.capitalize()})",
     xaxis_title="Day of Week",
     yaxis=dict(
         title="Average Sales",
@@ -79,6 +95,7 @@ fig0.update_layout(
     legend=dict(orientation="h"),
     barmode='group'
 )
+
 st.plotly_chart(fig0, use_container_width=True)
 
 
