@@ -22,7 +22,7 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
 # Define custom colors
-custom_colors = [ '#FCD5C6', '#F2DD83', '#9A8CB5', '#EB9861', '#72884B', '#567BA2', '#CBD9EF']
+custom_colors = [ '#F2DD83', '#FCD5C6',  '#9A8CB5', '#EB9861', '#72884B', '#567BA2', '#CBD9EF']
 
 # Header
 st.title("Restaurant Dashboard")
