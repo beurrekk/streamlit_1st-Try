@@ -49,7 +49,7 @@ fig0.add_trace(go.Scatter(
     y=line_data['Kitchen Staff'],
     mode='lines',
     name='Kitchen Staff',
-    line=dict(color='#CBD9EF'),
+    line=dict(color='#f85c70'),
     yaxis='y2'
 ))
 fig0.add_trace(go.Scatter(
@@ -57,7 +57,7 @@ fig0.add_trace(go.Scatter(
     y=line_data['Drinks Staff'],
     mode='lines',
     name='Drinks Staff',
-    line=dict(color='#FCD5C6'),
+    line=dict(color='#9A8CB5'),
     yaxis='y2'
 ))
 
