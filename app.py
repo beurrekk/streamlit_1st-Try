@@ -114,7 +114,7 @@ with col3:
                   title="Top 4 Popular Food Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig3.update_yaxes(range=[2200, 2600])
+    fig3.update_yaxes(range=[2000, 2600])
     st.plotly_chart(fig3, use_container_width=True)
 
 with col4:
@@ -125,7 +125,7 @@ with col4:
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig4.update_yaxes(range=[2000, 2600])
+    fig4.update_yaxes(range=[2200, 2600])
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
