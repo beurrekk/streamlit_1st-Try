@@ -22,7 +22,7 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
 # Define custom colors
-custom_colors = [ '#F2DD83', '#FCD5C6',  '#9A8CB5', '#EB9861', '#72884B', '#567BA2', '#CBD9EF']
+custom_colors = ['#F2DD83','#CBD9EF', '#FCD5C6',  '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
 
 # Header
 st.title("Restaurant Dashboard")
@@ -80,7 +80,7 @@ with col4:
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig4.update_yaxes(range=[2000, 2600])
+    fig4.update_yaxes(range=[2200, 2600])
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
