@@ -28,7 +28,7 @@ custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B
 st.title("Restaurant Dashboard")
 
 # Chart 0: Bar and Line Chart with Filter
-st.header("Sales per Day of Week (Chart 0)")
+st.header("Sales per Day of Week")
 
 filter_choice = st.radio(
     "Choose Category to Display in the Line Chart:",
@@ -71,34 +71,6 @@ fig0.update_layout(
 
 st.plotly_chart(fig0, use_container_width=True)
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-
-# Set Streamlit to wide mode
-st.set_page_config(layout="wide")
-
-# Load the dataset
-data_file = 'test_data.csv'
-df = pd.read_csv(data_file)
-
-# Preprocessing
-df['Order Time'] = pd.to_datetime(df['Order Time'])
-df['Serve Time'] = pd.to_datetime(df['Serve Time'])
-df['Month'] = df['Order Time'].dt.strftime('%B')  # Month names
-df['Month'] = pd.Categorical(df['Month'], categories=[
-    'June', 'July', 'August', 'September', 'October', 'November', 'December'], ordered=True)
-df['Day Of Week'] = pd.Categorical(df['Day Of Week'], 
-                                   categories=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
-                                   ordered=True)
-df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
-
-# Define custom colors
-custom_colors = ['#CBD9EF', '#FCD5C6', '#F2DD83', '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
-
-# Header
-st.title("Restaurant Dashboard")
 
 # Overall Section
 st.header("Overall")
