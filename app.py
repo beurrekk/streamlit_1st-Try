@@ -22,7 +22,7 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
 # Define custom colors
-custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6',  '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
+custom_colors = ['#CBD9EF', '#FCD5C6', '#F2DD83', '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
 
 # Header
 st.title("Restaurant Dashboard")
@@ -41,8 +41,7 @@ with col1:
                    title="Sum of Price by Month", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig1.add_traces(go.Scatter(x=price_by_month['Month'], y=price_by_month['Price'], 
-                               mode='lines', name='Trend Line', line=dict(color='blue', dash='dot')))
+    fig1.update_yaxes(range=[8000, 14000])
     st.plotly_chart(fig1, use_container_width=True)
 
 with col2:
@@ -53,6 +52,7 @@ with col2:
                    title="Average Count of Menu by Day of Week", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
+    fig2.update_yaxes(range=[2000, 5000])
     st.plotly_chart(fig2, use_container_width=True)
 
 # Popular Menu Section
@@ -69,6 +69,7 @@ with col3:
                   title="Top 4 Popular Food Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
+    fig3.update_yaxes(range=[2000, 2600])
     st.plotly_chart(fig3, use_container_width=True)
 
 with col4:
@@ -79,6 +80,7 @@ with col4:
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
+    fig4.update_yaxes(range=[2000, 2600])
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
@@ -95,6 +97,7 @@ with col5:
                    title="Quantity of All Menus by Month", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
+    fig5.update_yaxes(range=[2000, 4500])
     st.plotly_chart(fig5, use_container_width=True)
 
 with col6:
@@ -105,61 +108,5 @@ with col6:
                    title="Average Waiting Time vs. Kitchen Staff", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
+    fig6.update_yaxes(range=[1000, 2500])
     st.plotly_chart(fig6, use_container_width=True)
-
-# Chart 7 and Chart 8: Place in the same row
-col7, col8 = st.columns(2)
-
-with col7:
-    # Chart 7: Line chart without area (Average Waiting Time by Month)
-    avg_wait_time_by_month = df.groupby('Month')['Waiting Time'].mean().reset_index(name='Avg Waiting Time')
-    fig7 = px.line(avg_wait_time_by_month, x='Month', y='Avg Waiting Time', 
-                   title="Average Waiting Time by Month", 
-                   markers=True, 
-                   color_discrete_sequence=custom_colors)
-    st.plotly_chart(fig7, use_container_width=True)
-
-with col8:
-    # Chart 8: Line chart with dual y-axes (Menu Count and Kitchen Staff by Day of Week)
-    menu_and_staff_by_day = df.groupby('Day Of Week').agg({'Menu': 'count', 'Kitchen Staff': 'mean'}).reset_index()
-    fig8 = go.Figure()
-
-    # Add trace for Menu Count (left y-axis)
-    fig8.add_trace(go.Scatter(x=menu_and_staff_by_day['Day Of Week'], 
-                              y=menu_and_staff_by_day['Menu'], 
-                              mode='lines+markers', 
-                              name='Menu Count', 
-                              line=dict(color=custom_colors[0])))
-
-    # Add trace for Kitchen Staff (right y-axis)
-    fig8.add_trace(go.Scatter(x=menu_and_staff_by_day['Day Of Week'], 
-                              y=menu_and_staff_by_day['Kitchen Staff'], 
-                              mode='lines+markers', 
-                              name='Kitchen Staff', 
-                              line=dict(color=custom_colors[1]), 
-                              yaxis="y2"))
-
-    # Configure layout for dual y-axes
-    fig8.update_layout(
-        title="Menu Count and Kitchen Staff by Day of Week",
-        xaxis_title="Day of Week",
-        yaxis_title="Menu Count",
-        yaxis2=dict(
-            title="Kitchen Staff",
-            overlaying="y",
-            side="right"
-        )
-    )
-    st.plotly_chart(fig8, use_container_width=True)
-
-# Waiting Time - Drink Section
-st.header("Waiting Time - Drink")
-
-# Chart 9: Full-width chart
-drink_data = df[df['Category'] == 'drink']
-drink_quantity_by_month = drink_data.groupby(['Month', 'Menu']).size().reset_index(name='Drink Quantity')
-fig9 = px.line(drink_quantity_by_month, x='Month', y='Drink Quantity', color='Menu', 
-               title="Quantity of Drink Menus by Month (per Drink Type)", 
-               markers=True, 
-               color_discrete_sequence=custom_colors)
-st.plotly_chart(fig9, use_container_width=True)
