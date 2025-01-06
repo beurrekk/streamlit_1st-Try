@@ -22,14 +22,16 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
 # Define custom colors
-custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
+custom_colors = ['#F2DD83','#9A8CB5', '#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
 
 # Header
 st.title("Restaurant Dashboard")
 
+# Overall Section
+st.header("Overall")
+
 
 # Chart 0: Bar and Line Chart
-st.header("Sales per Day of Week (Chart 0)")
 
 # Data preparation
 total_sales_day = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Total Sales')
@@ -72,8 +74,6 @@ fig0.update_layout(
 st.plotly_chart(fig0, use_container_width=True)
 
 
-# Overall Section
-st.header("Overall")
 
 # Chart 1 and Chart 2: Place in the same row
 col1, col2 = st.columns(2)
