@@ -28,26 +28,12 @@ custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B
 st.title("Restaurant Dashboard")
 
 
-# Chart 0: Bar and Line Chart with Filter
-st.header("Sales per Day of Week")
-
-# Create a square-style container for the filter
-st.markdown("""
-<div style="border: 2px solid #CBD9EF; padding: 10px; border-radius: 10px; background-color: #F5F5F5;">
-""", unsafe_allow_html=True)
-
-filter_choice = st.radio(
-    "Choose Category to Display in the Line Chart:",
-    options=["Both", "Food", "Drink"],
-    index=0
-)
-
-st.markdown("</div>", unsafe_allow_html=True)  # Close the styled container
+# Chart 0: Bar and Line Chart
+st.header("Sales per Day of Week (Chart 0)")
 
 # Data preparation
 total_sales_day = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Total Sales')
-filtered_categories = ['food', 'drink'] if filter_choice == "Both" else [filter_choice.lower()]
-total_sales_category = df[df['Category'].isin(filtered_categories)].groupby(['Day Of Week', 'Category'])['Price'].sum().reset_index()
+total_sales_category = df[df['Category'].isin(['food', 'drink'])].groupby(['Day Of Week', 'Category'])['Price'].sum().reset_index()
 
 # Create the chart
 fig0 = go.Figure()
@@ -61,7 +47,7 @@ fig0.add_trace(go.Bar(
 ))
 
 # Add line chart
-for category in filtered_categories:
+for category in ['food', 'drink']:
     category_data = total_sales_category[total_sales_category['Category'] == category]
     color = custom_colors[3] if category == "food" else custom_colors[4]
     fig0.add_trace(go.Scatter(
@@ -74,7 +60,7 @@ for category in filtered_categories:
 
 # Customize the layout
 fig0.update_layout(
-    title=f"Total Sales per Day of Week (Bar & Line) - {filter_choice}",
+    title="Total Sales per Day of Week (Bar & Line)",
     xaxis_title="Day of Week",
     yaxis_title="Total Sales",
     barmode='group',
