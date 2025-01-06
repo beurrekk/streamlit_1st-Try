@@ -32,53 +32,52 @@ st.header("Overall")
 
 
 # Chart 0: Bar and Line in One Chart
-# Add category filter
-category_filter = st.radio("Select Category", ['food', 'drink'], index=0)  # Default to 'food'
+category_filter = st.selectbox("Select Category for Bar Chart", options=["All", "food", "drink"], index=0)
 
-# Filter data based on selected category
-filtered_df = df[df['Category'] == category_filter]
+# Apply filter to the bar chart data
+if category_filter == "All":
+    bar_data = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Average Sales')
+else:
+    bar_data = df[df['Category'] == category_filter].groupby('Day Of Week')['Price'].sum().reset_index(name='Average Sales')
 
-# Data for Bar Chart: Average Sales per Day of Week
-bar_data = filtered_df.groupby('Day Of Week')['Price'].mean().reset_index(name='Average Sales')
-
-# Data for Line Chart: Staff Counts (Kitchen Staff and Drinks Staff)
+# Line Chart Data: Staff (Kitchen Staff, Drinks Staff) by Day of Week (unchanged)
 line_data = df.groupby('Day Of Week').agg({'Kitchen Staff': 'mean', 'Drinks Staff': 'mean'}).reset_index()
 
-# Create Bar and Line Chart
+# Create Figure
 fig0 = go.Figure()
 
-# Add Bar Chart: Average Sales
+# Add Bar Chart for Average Sales (filtered by category)
 fig0.add_trace(go.Bar(
     x=bar_data['Day Of Week'],
     y=bar_data['Average Sales'],
     name='Average Sales',
     marker_color='#F2DD83',
-    yaxis='y1'  # Left y-axis
+    yaxis='y1'
 ))
 
-# Add Line Chart: Kitchen Staff
+# Add Line Chart for Kitchen Staff
 fig0.add_trace(go.Scatter(
     x=line_data['Day Of Week'],
     y=line_data['Kitchen Staff'],
     mode='lines',
     name='Kitchen Staff',
-    line=dict(color='#CBD9EF'),
-    yaxis='y2'  # Right y-axis
+    line=dict(color='#f85c70'),
+    yaxis='y2'
 ))
 
-# Add Line Chart: Drinks Staff
+# Add Line Chart for Drinks Staff
 fig0.add_trace(go.Scatter(
     x=line_data['Day Of Week'],
     y=line_data['Drinks Staff'],
     mode='lines',
     name='Drinks Staff',
-    line=dict(color='#FCD5C6'),
-    yaxis='y2'  # Right y-axis
+    line=dict(color='#9A8CB5'),
+    yaxis='y2'
 ))
 
 # Set layout for dual y-axis
 fig0.update_layout(
-    title=f"Average Sales and Staff by Day of Week ({category_filter.capitalize()})",
+    title="Average Sales and Staff by Day of Week",
     xaxis_title="Day of Week",
     yaxis=dict(
         title="Average Sales",
@@ -96,8 +95,8 @@ fig0.update_layout(
     barmode='group'
 )
 
+# Display Chart
 st.plotly_chart(fig0, use_container_width=True)
-
 
 
 # Chart 1 and Chart 2: Place in the same row
