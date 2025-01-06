@@ -17,6 +17,8 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
                                    categories=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
                                    ordered=True)
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
+# Define custom colors
+custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
 
 # Header
 st.set_page_config(layout="wide")  # Set wide layout for Streamlit
