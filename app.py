@@ -27,8 +27,14 @@ custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B
 # Header
 st.title("Restaurant Dashboard")
 
+
 # Chart 0: Bar and Line Chart with Filter
 st.header("Sales per Day of Week")
+
+# Create a square-style container for the filter
+st.markdown("""
+<div style="border: 2px solid #CBD9EF; padding: 10px; border-radius: 10px; background-color: #F5F5F5;">
+""", unsafe_allow_html=True)
 
 filter_choice = st.radio(
     "Choose Category to Display in the Line Chart:",
@@ -36,12 +42,17 @@ filter_choice = st.radio(
     index=0
 )
 
+st.markdown("</div>", unsafe_allow_html=True)  # Close the styled container
+
+# Data preparation
 total_sales_day = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Total Sales')
 filtered_categories = ['food', 'drink'] if filter_choice == "Both" else [filter_choice.lower()]
 total_sales_category = df[df['Category'].isin(filtered_categories)].groupby(['Day Of Week', 'Category'])['Price'].sum().reset_index()
 
+# Create the chart
 fig0 = go.Figure()
 
+# Add bar chart
 fig0.add_trace(go.Bar(
     x=total_sales_day['Day Of Week'], 
     y=total_sales_day['Total Sales'], 
@@ -49,17 +60,19 @@ fig0.add_trace(go.Bar(
     marker=dict(color=custom_colors[0])
 ))
 
+# Add line chart
 for category in filtered_categories:
     category_data = total_sales_category[total_sales_category['Category'] == category]
     color = custom_colors[3] if category == "food" else custom_colors[4]
     fig0.add_trace(go.Scatter(
         x=category_data['Day Of Week'], 
         y=category_data['Price'], 
-        mode='lines+markers', 
+        mode='lines',  # Remove markers (spots) from the line chart
         name=f'Total Sales - {category.capitalize()} (Line)',
         line=dict(width=2, color=color)
     ))
 
+# Customize the layout
 fig0.update_layout(
     title=f"Total Sales per Day of Week (Bar & Line) - {filter_choice}",
     xaxis_title="Day of Week",
@@ -69,6 +82,7 @@ fig0.update_layout(
     legend=dict(title="Legend")
 )
 
+# Display the chart
 st.plotly_chart(fig0, use_container_width=True)
 
 
