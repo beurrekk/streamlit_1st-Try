@@ -32,7 +32,6 @@ st.header("Overall")
 
 
 # Chart 0: Bar and Line in One Chart
-st.header("Overall Sales and Staff Analysis")
 bar_data = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Average Sales')
 line_data = df.groupby('Day Of Week').agg({'Kitchen Staff': 'mean', 'Drinks Staff': 'mean'}).reset_index()
 
@@ -106,7 +105,7 @@ with col2:
                    title="Average Count of Menu by Day of Week", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig2.update_yaxes(range=[2000, 5000])
+    fig2.update_yaxes(range=[2500, 5000])
     st.plotly_chart(fig2, use_container_width=True)
 
 # Popular Menu Section
@@ -134,7 +133,7 @@ with col4:
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig4.update_yaxes(range=[2000, 2600])
+    fig4.update_yaxes(range=[2200, 2600])
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
@@ -151,7 +150,7 @@ with col5:
                    title="Quantity of All Menus by Month", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig5.update_yaxes(range=[2000, 4500])
+    fig5.update_yaxes(range=[2500, 4500])
     st.plotly_chart(fig5, use_container_width=True)
 
 with col6:
@@ -162,7 +161,7 @@ with col6:
                    title="Average Waiting Time vs. Kitchen Staff", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig6.update_yaxes(range=[1000, 2500])
+    fig6.update_yaxes(range=[1400, 2500])
     st.plotly_chart(fig6, use_container_width=True)
 
 
