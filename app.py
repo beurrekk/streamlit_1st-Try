@@ -32,6 +32,7 @@ st.header("Overall")
 
 
 # Chart 0: Bar and Line Chart
+st.header("Sales and Staff Quantity per Day of Week (Chart 0)")
 
 # Data preparation
 # Bar chart: Average sales/day of week
