@@ -52,7 +52,7 @@ with col2:
                    title="Average Count of Menu by Day of Week", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig2.update_yaxes(range=[2000, 5000])
+    fig2.update_yaxes(range=[2500, 5000])
     st.plotly_chart(fig2, use_container_width=True)
 
 # Popular Menu Section
@@ -80,7 +80,7 @@ with col4:
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig4.update_yaxes(range=[2200, 2600])
+    fig4.update_yaxes(range=[2300, 2600])
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
