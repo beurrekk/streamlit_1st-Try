@@ -31,47 +31,73 @@ st.title("Restaurant Dashboard")
 st.header("Overall")
 
 
-# Chart 0: Bar and Line Chart
+# Chart 0: Bar and Line Chart with Dual Y-Axes
 
-# Data preparation
-total_sales_day = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Total Sales')
-total_sales_category = df[df['Category'].isin(['food', 'drink'])].groupby(['Day Of Week', 'Category'])['Price'].sum().reset_index()
+# Data preparation for the bar chart (average sales/day of week)
+avg_sales_day = df.groupby('Day Of Week')['Price'].mean().reset_index(name='Avg Sales')
+
+# Data preparation for the line chart (kitchen staff and drink staff)
+staff_quantity = df.groupby('Day Of Week').agg({
+    'Kitchen Staff': 'mean',
+    'Drink Staff': 'mean'
+}).reset_index()
 
 # Create the chart
-fig0 = go.Figure()
+fig10 = go.Figure()
 
-# Add bar chart
-fig0.add_trace(go.Bar(
-    x=total_sales_day['Day Of Week'], 
-    y=total_sales_day['Total Sales'], 
-    name='Total Sales (Bar)',
-    marker=dict(color=custom_colors[0])
+# Add bar chart for average sales/day of week
+fig10.add_trace(go.Bar(
+    x=avg_sales_day['Day Of Week'],
+    y=avg_sales_day['Avg Sales'],
+    name='Average Sales (Bar)',
+    marker=dict(color=custom_colors[0]),
+    yaxis='y'  # Use the left y-axis
 ))
 
-# Add line chart
-for category in ['food', 'drink']:
-    category_data = total_sales_category[total_sales_category['Category'] == category]
-    color = custom_colors[3] if category == "food" else custom_colors[4]
-    fig0.add_trace(go.Scatter(
-        x=category_data['Day Of Week'], 
-        y=category_data['Price'], 
-        mode='lines',  # Remove markers (spots) from the line chart
-        name=f'Total Sales - {category.capitalize()} (Line)',
-        line=dict(width=2, color=color)
-    ))
+# Add line chart for kitchen staff
+fig10.add_trace(go.Scatter(
+    x=staff_quantity['Day Of Week'],
+    y=staff_quantity['Kitchen Staff'],
+    mode='lines',  # Line chart without markers
+    name='Kitchen Staff (Line)',
+    line=dict(width=2, color=custom_colors[3]),
+    yaxis='y2'  # Use the right y-axis
+))
+
+# Add line chart for drink staff
+fig10.add_trace(go.Scatter(
+    x=staff_quantity['Day Of Week'],
+    y=staff_quantity['Drink Staff'],
+    mode='lines',  # Line chart without markers
+    name='Drink Staff (Line)',
+    line=dict(width=2, color=custom_colors[4]),
+    yaxis='y2'  # Use the right y-axis
+))
 
 # Customize the layout
-fig0.update_layout(
-    title="Total Sales per Day of Week (Bar & Line)",
-    xaxis_title="Day of Week",
-    yaxis_title="Total Sales",
+fig10.update_layout(
+    title="Average Sales and Staff Quantity per Day of Week",
+    xaxis=dict(title="Day of Week"),
+    yaxis=dict(
+        title="Average Sales",
+        titlefont=dict(color=custom_colors[0]),
+        tickfont=dict(color=custom_colors[0])
+    ),
+    yaxis2=dict(
+        title="Staff Quantity",
+        titlefont=dict(color=custom_colors[3]),
+        tickfont=dict(color=custom_colors[3]),
+        overlaying='y',  # Overlay the right y-axis on the same chart
+        side='right'
+    ),
     barmode='group',
     template='plotly_white',
-    legend=dict(title="Legend")
+    legend=dict(title="Legend"),
 )
 
 # Display the chart
-st.plotly_chart(fig0, use_container_width=True)
+st.plotly_chart(fig10, use_container_width=True)
+
 
 
 
