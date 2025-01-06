@@ -3,9 +3,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Set Streamlit to wide mode
-st.set_page_config(layout="wide")
-
 # Load the dataset
 data_file = 'test_data.csv'
 df = pd.read_csv(data_file)
@@ -21,70 +18,64 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
                                    ordered=True)
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
-# Define custom colors
-custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
-
 # Header
+st.set_page_config(layout="wide")  # Set wide layout for Streamlit
 st.title("Restaurant Dashboard")
 
-# ===================== CHART 0 =====================
-st.header("Chart 0: Sales and Staff Quantity per Day of Week")
+# Chart 0: Bar and Line in One Chart
+st.header("Overall Sales and Staff Analysis")
+bar_data = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Average Sales')
+line_data = df.groupby('Day Of Week').agg({'Kitchen Staff': 'mean', 'Drinks Staff': 'mean'}).reset_index()
 
-# Data preparation
-avg_sales_day = df.groupby('Day Of Week')['Price'].mean().reset_index(name='Average Sales')
-staff_data = df.groupby(['Day Of Week']).agg({'Kitchen Staff': 'mean', 'Drink Staff': 'mean'}).reset_index()
-
-# Create the chart
 fig0 = go.Figure()
-
 fig0.add_trace(go.Bar(
-    x=avg_sales_day['Day Of Week'], 
-    y=avg_sales_day['Average Sales'], 
-    name='Average Sales (Bar)',
-    marker=dict(color=custom_colors[0]),
-    yaxis="y"  # Left y-axis
+    x=bar_data['Day Of Week'],
+    y=bar_data['Average Sales'],
+    name='Average Sales',
+    marker_color='#F2DD83',
+    yaxis='y1'
 ))
-
 fig0.add_trace(go.Scatter(
-    x=staff_data['Day Of Week'], 
-    y=staff_data['Kitchen Staff'], 
-    mode='lines', 
-    name='Kitchen Staff (Line)',
-    line=dict(width=2, color=custom_colors[3]),
-    yaxis="y2"  # Right y-axis
+    x=line_data['Day Of Week'],
+    y=line_data['Kitchen Staff'],
+    mode='lines',
+    name='Kitchen Staff',
+    line=dict(color='#CBD9EF'),
+    yaxis='y2'
 ))
-
 fig0.add_trace(go.Scatter(
-    x=staff_data['Day Of Week'], 
-    y=staff_data['Drink Staff'], 
-    mode='lines', 
-    name='Drink Staff (Line)',
-    line=dict(width=2, color=custom_colors[4]),
-    yaxis="y2"  # Right y-axis
+    x=line_data['Day Of Week'],
+    y=line_data['Drinks Staff'],
+    mode='lines',
+    name='Drinks Staff',
+    line=dict(color='#FCD5C6'),
+    yaxis='y2'
 ))
 
+# Set layout for dual y-axis
 fig0.update_layout(
-    title="Sales and Staff Quantity per Day of Week (Bar & Line)",
+    title="Average Sales and Staff by Day of Week",
     xaxis_title="Day of Week",
     yaxis=dict(
-        title="Average Sales (Bar)",
-        titlefont=dict(color=custom_colors[0]),
-        tickfont=dict(color=custom_colors[0]),
-        side="left"
+        title="Average Sales",
+        titlefont=dict(color="#F2DD83"),
+        tickfont=dict(color="#F2DD83"),
     ),
     yaxis2=dict(
-        title="Staff Quantity (Line)",
-        titlefont=dict(color=custom_colors[3]),
-        tickfont=dict(color=custom_colors[3]),
+        title="Staff Count",
+        titlefont=dict(color="#CBD9EF"),
+        tickfont=dict(color="#CBD9EF"),
         overlaying="y",
         side="right"
     ),
-    barmode='group',
-    template='plotly_white',
-    legend=dict(title="Legend")
+    legend=dict(orientation="h"),
+    barmode='group'
 )
-
 st.plotly_chart(fig0, use_container_width=True)
+
+# Rest of the charts go here (Charts 1–9), following similar adjustments
+# Ensure to match column names as per the dataset and apply color changes
+
 
 # ===================== CHART 1 =====================
 st.header("Chart 1: Sum of Price by Month")
