@@ -22,13 +22,64 @@ df['Day Of Week'] = pd.Categorical(df['Day Of Week'],
 df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
 # Define custom colors
-custom_colors = ['#F2DD83','#CBD9EF', '#FCD5C6',  '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
+custom_colors = ['#CBD9EF', '#FCD5C6', '#F2DD83', '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
 
 # Header
 st.title("Restaurant Dashboard")
 
 # Overall Section
 st.header("Overall")
+
+# Chart 0: Bar and Line Chart with Filter
+st.header("Sales per Day of Week (Chart 0)")
+
+# Add filter
+filter_choice = st.radio(
+    "Choose Category to Display in the Line Chart:",
+    options=["Both", "Food", "Drink"],
+    index=0
+)
+
+# Data preparation
+total_sales_day = df.groupby('Day Of Week')['Price'].sum().reset_index(name='Total Sales')
+filtered_categories = ['food', 'drink'] if filter_choice == "Both" else [filter_choice.lower()]
+total_sales_category = df[df['Category'].isin(filtered_categories)].groupby(['Day Of Week', 'Category'])['Price'].sum().reset_index()
+
+# Create the figure
+fig0 = go.Figure()
+
+# Add Bar Chart
+fig0.add_trace(go.Bar(
+    x=total_sales_day['Day Of Week'], 
+    y=total_sales_day['Total Sales'], 
+    name='Total Sales (Bar)',
+    marker=dict(color='#CBD9EF')  # Custom color for bar chart
+))
+
+# Add Line Chart for Selected Categories
+for category in filtered_categories:
+    category_data = total_sales_category[total_sales_category['Category'] == category]
+    fig0.add_trace(go.Scatter(
+        x=category_data['Day Of Week'], 
+        y=category_data['Price'], 
+        mode='lines+markers', 
+        name=f'Total Sales - {category.capitalize()} (Line)',
+        line=dict(width=2)
+    ))
+
+# Customize layout
+fig0.update_layout(
+    title=f"Total Sales per Day of Week (Bar & Line) - {filter_choice}",
+    xaxis_title="Day of Week",
+    yaxis_title="Total Sales",
+    barmode='group',
+    template='plotly_white',
+    legend=dict(title="Legend")
+)
+
+# Display chart
+st.plotly_chart(fig0, use_container_width=True)
+
 
 # Chart 1 and Chart 2: Place in the same row
 col1, col2 = st.columns(2)
@@ -52,7 +103,7 @@ with col2:
                    title="Average Count of Menu by Day of Week", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig2.update_yaxes(range=[2500, 5000])
+    fig2.update_yaxes(range=[2000, 5000])
     st.plotly_chart(fig2, use_container_width=True)
 
 # Popular Menu Section
@@ -80,7 +131,7 @@ with col4:
                   title="Top 4 Popular Drink Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig4.update_yaxes(range=[2300, 2600])
+    fig4.update_yaxes(range=[2000, 2600])
     st.plotly_chart(fig4, use_container_width=True)
 
 # Waiting Time - Food Section
@@ -97,7 +148,7 @@ with col5:
                    title="Quantity of All Menus by Month", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig5.update_yaxes(range=[2500, 4500])
+    fig5.update_yaxes(range=[2000, 4500])
     st.plotly_chart(fig5, use_container_width=True)
 
 with col6:
@@ -108,102 +159,6 @@ with col6:
                    title="Average Waiting Time vs. Kitchen Staff", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig6.update_yaxes(range=[1400, 2500])
+    fig6.update_yaxes(range=[1000, 2500])
     st.plotly_chart(fig6, use_container_width=True)
 
-# Chart 7 and Chart 8: Place in the same row
-col7, col8 = st.columns(2)
-
-with col7:
-    # Chart 7: Line chart without area (Average Waiting Time by Month)
-    avg_wait_time_by_month = df.groupby('Month')['Waiting Time'].mean().reset_index(name='Avg Waiting Time')
-    fig7 = px.line(avg_wait_time_by_month, x='Month', y='Avg Waiting Time', 
-                   title="Average Waiting Time by Month", 
-                   markers=True, 
-                   color_discrete_sequence=custom_colors)
-    st.plotly_chart(fig7, use_container_width=True)
-
-with col8:
-    # Chart 8: Line chart with dual y-axes (Menu Count and Kitchen Staff by Day of Week)
-    menu_and_staff_by_day = df.groupby('Day Of Week').agg({'Menu': 'count', 'Kitchen Staff': 'mean'}).reset_index()
-    fig8 = go.Figure()
-
-    # Add trace for Menu Count (left y-axis)
-    fig8.add_trace(go.Scatter(x=menu_and_staff_by_day['Day Of Week'], 
-                              y=menu_and_staff_by_day['Menu'], 
-                              mode='lines+markers', 
-                              name='Menu Count', 
-                              line=dict(color=custom_colors[0])))
-
-    # Add trace for Kitchen Staff (right y-axis)
-    fig8.add_trace(go.Scatter(x=menu_and_staff_by_day['Day Of Week'], 
-                              y=menu_and_staff_by_day['Kitchen Staff'], 
-                              mode='lines+markers', 
-                              name='Kitchen Staff', 
-                              line=dict(color=custom_colors[1]), 
-                              yaxis="y2"))
-
-    # Configure layout for dual y-axes
-    fig8.update_layout(
-        title="Menu Count and Kitchen Staff by Day of Week",
-        xaxis_title="Day of Week",
-        yaxis_title="Menu Count",
-        yaxis2=dict(
-            title="Kitchen Staff",
-            overlaying="y",
-            side="right"
-        )
-    )
-    st.plotly_chart(fig8, use_container_width=True)
-
-# Waiting Time - Drink Section
-st.header("Waiting Time - Drink")
-
-# Chart 9: Full-width chart
-drink_data = df[df['Category'] == 'drink']
-drink_quantity_by_month = drink_data.groupby(['Month', 'Menu']).size().reset_index(name='Drink Quantity')
-fig9 = px.line(drink_quantity_by_month, x='Month', y='Drink Quantity', color='Menu', 
-               title="Quantity of Drink Menus by Month (per Drink Type)", 
-               markers=True, 
-               color_discrete_sequence=custom_colors)
-st.plotly_chart(fig9, use_container_width=True)
-
-# Chart 10: Bar and Line Chart in 1 Chart
-# Data preparation
-average_sales_day = df.groupby('Day Of Week')['Price'].mean().reset_index(name='Avg Sales')
-average_sales_category = df[df['Category'].isin(['food', 'drink'])].groupby(['Day Of Week', 'Category'])['Price'].mean().reset_index()
-
-# Create the figure
-fig10 = go.Figure()
-
-# Add Bar Chart
-fig10.add_trace(go.Bar(
-    x=average_sales_day['Day Of Week'], 
-    y=average_sales_day['Avg Sales'], 
-    name='Avg Sales (Bar)',
-    marker=dict(color='#CBD9EF')  # Custom color for bar chart
-))
-
-# Add Line Chart for Food and Drink Categories
-for category in ['food', 'drink']:
-    category_data = average_sales_category[average_sales_category['Category'] == category]
-    fig10.add_trace(go.Scatter(
-        x=category_data['Day Of Week'], 
-        y=category_data['Price'], 
-        mode='lines+markers', 
-        name=f'Avg Sales - {category.capitalize()} (Line)',
-        line=dict(width=2)
-    ))
-
-# Customize layout
-fig10.update_layout(
-    title="Average Sales per Day of Week (Bar & Line)",
-    xaxis_title="Day of Week",
-    yaxis_title="Average Sales",
-    barmode='group',
-    template='plotly_white',
-    legend=dict(title="Legend")
-)
-
-# Display chart
-st.plotly_chart(fig10, use_container_width=True)
