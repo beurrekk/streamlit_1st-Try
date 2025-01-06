@@ -167,3 +167,43 @@ fig9 = px.line(drink_quantity_by_month, x='Month', y='Drink Quantity', color='Me
                markers=True, 
                color_discrete_sequence=custom_colors)
 st.plotly_chart(fig9, use_container_width=True)
+
+# Chart 10: Bar and Line Chart in 1 Chart
+# Data preparation
+average_sales_day = df.groupby('Day Of Week')['Price'].mean().reset_index(name='Avg Sales')
+average_sales_category = df[df['Category'].isin(['food', 'drink'])].groupby(['Day Of Week', 'Category'])['Price'].mean().reset_index()
+
+# Create the figure
+fig10 = go.Figure()
+
+# Add Bar Chart
+fig10.add_trace(go.Bar(
+    x=average_sales_day['Day Of Week'], 
+    y=average_sales_day['Avg Sales'], 
+    name='Avg Sales (Bar)',
+    marker=dict(color='#CBD9EF')  # Custom color for bar chart
+))
+
+# Add Line Chart for Food and Drink Categories
+for category in ['food', 'drink']:
+    category_data = average_sales_category[average_sales_category['Category'] == category]
+    fig10.add_trace(go.Scatter(
+        x=category_data['Day Of Week'], 
+        y=category_data['Price'], 
+        mode='lines+markers', 
+        name=f'Avg Sales - {category.capitalize()} (Line)',
+        line=dict(width=2)
+    ))
+
+# Customize layout
+fig10.update_layout(
+    title="Average Sales per Day of Week (Bar & Line)",
+    xaxis_title="Day of Week",
+    yaxis_title="Average Sales",
+    barmode='group',
+    template='plotly_white',
+    legend=dict(title="Legend")
+)
+
+# Display chart
+st.plotly_chart(fig10, use_container_width=True)
