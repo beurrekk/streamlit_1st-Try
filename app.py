@@ -114,7 +114,7 @@ with col3:
                   title="Top 4 Popular Food Categories", 
                   color='Menu', 
                   color_discrete_sequence=custom_colors)
-    fig3.update_yaxes(range=[2000, 2600])
+    fig3.update_yaxes(range=[2200, 2600])
     st.plotly_chart(fig3, use_container_width=True)
 
 with col4:
@@ -142,7 +142,7 @@ with col5:
                    title="Quantity of All Menus by Month", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig5.update_yaxes(range=[2000, 4500])
+    fig5.update_yaxes(range=[2500, 4500])
     st.plotly_chart(fig5, use_container_width=True)
 
 with col6:
@@ -153,7 +153,7 @@ with col6:
                    title="Average Waiting Time vs. Kitchen Staff", 
                    markers=True, 
                    color_discrete_sequence=custom_colors)
-    fig6.update_yaxes(range=[1000, 2500])
+    fig6.update_yaxes(range=[1400, 2500])
     st.plotly_chart(fig6, use_container_width=True)
 # Chart 7 and Chart 8: Place in the same row
 col7, col8 = st.columns(2)
