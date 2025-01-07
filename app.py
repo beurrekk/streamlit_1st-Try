@@ -9,9 +9,13 @@ df = pd.read_csv(data_file)
 # Preprocessing
 df['Order Time'] = pd.to_datetime(df['Order Time'])
 df['Serve Time'] = pd.to_datetime(df['Serve Time'])
+df['Month'] = df['Order Time'].dt.strftime('%B')  # Month names
+df['Month'] = pd.Categorical(df['Month'], categories=[
+    'June', 'July', 'August', 'September', 'October', 'November', 'December'], ordered=True)
 df['Day Of Week'] = pd.Categorical(df['Day Of Week'], 
                                    categories=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], 
                                    ordered=True)
+df['Waiting Time'] = (df['Serve Time'] - df['Order Time']).dt.total_seconds()
 
 # Define custom colors
 custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6',  '#9A8CB5', '#EB9861', '#72884B', '#567BA2']
